@@ -11,6 +11,9 @@ public class DrawerInteractable : XRGrabInteractable
     [SerializeField] bool isLocked = true;
     [SerializeField] Vector3 distanceLimits = new Vector3(0.1f, 0.1f, 0f);
     [SerializeField] float drawerZLimit = 0.8f;
+    [SerializeField] GameObject keyLight = null;
+    [SerializeField] GameObject particles = null;
+    [SerializeField] GameObject[] keyParts = null;
 
     private Transform parentTransform = null;
     private bool isGrabbed = false;
@@ -82,6 +85,10 @@ public class DrawerInteractable : XRGrabInteractable
     private void OnDrawerUnlocked(SelectEnterEventArgs args)
     {
         isLocked = false;
+        if (keyLight != null)
+        {
+            TurnKeyLightOff();
+        }
     }
 
     private void OnDrawerLocked(SelectExitEventArgs args)
@@ -110,5 +117,15 @@ public class DrawerInteractable : XRGrabInteractable
         ChangeLayerMask(GRAB_LAYER);
         isGrabbed = false;
         transform.localPosition = drawerTransform.localPosition;
+    }
+
+    private void TurnKeyLightOff()
+    {
+        keyLight.SetActive(false);
+        particles.SetActive(false);
+        foreach (GameObject keyPart in keyParts)
+        {
+            keyPart.GetComponent<MaterialController>().TurnEmissionOff();
+        }
     }
 }
