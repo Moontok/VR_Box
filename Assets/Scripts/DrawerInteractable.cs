@@ -9,9 +9,13 @@ public class DrawerInteractable : XRGrabInteractable
     [SerializeField] Transform drawerTransform = null;
     [SerializeField] XRSocketInteractor keySocket = null;
     [SerializeField] bool isLocked = true;
+    [SerializeField] Vector3 distanceLimits = new Vector3(0.1f, 0.1f, 0f);
+    [SerializeField] float drawerZLimit = 0.8f;
 
     private Transform parentTransform = null;
     private bool isGrabbed = false;
+    private Vector3 positionLimits = Vector3.zero;
+
     private const string DEFAULT_LAYER = "Default";
     private const string GRAB_LAYER = "Grab";
 
@@ -24,6 +28,7 @@ public class DrawerInteractable : XRGrabInteractable
         }
 
         parentTransform = transform.parent;
+        positionLimits = drawerTransform.localPosition;
     }
 
     void Update()
@@ -35,6 +40,42 @@ public class DrawerInteractable : XRGrabInteractable
                 drawerTransform.localPosition.y,
                 transform.localPosition.z
             );
+
+            CheckLimits();
+        }
+    }
+
+    private void ChangeLayerMask(string mask)
+    {
+        interactionLayers = InteractionLayerMask.GetMask(mask);
+    }
+
+    private void CheckLimits()
+    {
+        if (
+            transform.localPosition.x > positionLimits.x + distanceLimits.x ||
+            transform.localPosition.x < positionLimits.x - distanceLimits.x ||
+            transform.localPosition.y > positionLimits.y + distanceLimits.y ||
+            transform.localPosition.y < positionLimits.y - distanceLimits.y
+        )    
+        {
+            ChangeLayerMask(DEFAULT_LAYER);
+        }
+        else if (drawerTransform.localPosition.z < positionLimits.z - distanceLimits.z)
+        {
+            isGrabbed = false;
+            drawerTransform.localPosition = positionLimits;
+            ChangeLayerMask(DEFAULT_LAYER);
+        }
+        else if (drawerTransform.localPosition.z > drawerZLimit + distanceLimits.z)
+        {
+            isGrabbed = false;
+            drawerTransform.localPosition = new Vector3(
+                drawerTransform.localPosition.x,
+                drawerTransform.localPosition.y,
+                drawerZLimit
+            );
+            ChangeLayerMask(DEFAULT_LAYER);
         }
     }
 
@@ -54,7 +95,7 @@ public class DrawerInteractable : XRGrabInteractable
 
         if (isLocked)
         {
-              interactionLayers = InteractionLayerMask.GetMask(DEFAULT_LAYER);
+            ChangeLayerMask(DEFAULT_LAYER);
         }
         else
         {
@@ -66,7 +107,8 @@ public class DrawerInteractable : XRGrabInteractable
     protected override void OnSelectExited(SelectExitEventArgs args)
     {
         base.OnSelectExited(args);
-        interactionLayers = InteractionLayerMask.GetMask(GRAB_LAYER);
+        ChangeLayerMask(GRAB_LAYER);
         isGrabbed = false;
+        transform.localPosition = drawerTransform.localPosition;
     }
 }
