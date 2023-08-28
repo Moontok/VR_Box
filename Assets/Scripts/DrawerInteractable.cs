@@ -13,7 +13,9 @@ public class DrawerInteractable : XRGrabInteractable
     [SerializeField] float drawerZLimit = 0.8f;
     [SerializeField] GameObject keyLight = null;
     [SerializeField] GameObject particles = null;
-    [SerializeField] GameObject[] keyParts = null;
+    [SerializeField] MeshRenderer[] keyParts = null;
+    [SerializeField] Material keyBaseMat = null;
+    [SerializeField] Material keyEmissionMat = null;
 
     private Transform parentTransform = null;
     private bool isGrabbed = false;
@@ -123,9 +125,9 @@ public class DrawerInteractable : XRGrabInteractable
     {
         keyLight.SetActive(false);
         particles.SetActive(false);
-        foreach (GameObject keyPart in keyParts)
+        foreach (MeshRenderer keyPart in keyParts)
         {
-            keyPart.GetComponent<MaterialController>().TurnEmissionOff();
+            keyPart.material = keyBaseMat;
         }
     }
 }
