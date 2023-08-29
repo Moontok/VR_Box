@@ -7,7 +7,7 @@ using System;
 
 public class SimpleUIControl : MonoBehaviour
 {
-    [SerializeField] private XRButtonInteractable startButton = null;
+    [SerializeField] private ButtonInteractable startButton = null;
     [SerializeField] private string[] messages = null;
     [SerializeField] private TMP_Text[] messageTexts = null;
     [SerializeField] private GameObject keyLight = null;

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.UI;
 
-public class XRButtonInteractable : XRSimpleInteractable
+public class ButtonInteractable : XRSimpleInteractable
 {
     [SerializeField] Image buttonImage = null;
     [SerializeField] private Color normalColor = Color.white;

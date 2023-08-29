@@ -9,7 +9,11 @@ using UnityEngine.UI;
 public class CombonationLock : MonoBehaviour
 {
     [SerializeField] private TMP_Text userInputText = null;
-    [SerializeField] private XRButtonInteractable[] comboButtons = null;
+    [SerializeField] private SymbolButtonInteractable[] comboButtons = null;
+    [SerializeField] private string comboCode = "000";
+    [SerializeField] private TMP_Text infoText = null;
+    [SerializeField] private string infoStartString = "Enter 3 Digit Code";
+    [SerializeField] private string infoResetString = "Enter 3 Digits to Reset";
     [SerializeField] private Image lockedPanel = null;
     [SerializeField] private Color unlockedColor = Color.green;
     [SerializeField] private Color lockedColor = Color.red;
@@ -17,19 +21,20 @@ public class CombonationLock : MonoBehaviour
     [SerializeField] private string lockedTextString = "Locked";
     [SerializeField] private string unlockedTextString = "Unlocked";
     [SerializeField] private bool isLocked = true;
-    [SerializeField] private string comboCode = "000";
+    [SerializeField] private bool isResettable = true;
 
     string inputValues = "";
     int maxButtonPresses = 0;
     int buttonPresses = 0;
+    bool resetCombo = false;
 
 
     private void Start()
     {
         maxButtonPresses = comboCode.Length;
-        ResetLock();
+        ResetUserValues();
 
-        foreach (XRButtonInteractable button in comboButtons)
+        foreach (SymbolButtonInteractable button in comboButtons)
         {
             button.selectEntered.AddListener(OnComboButtonPressed);
         }
@@ -37,26 +42,18 @@ public class CombonationLock : MonoBehaviour
 
     private void OnComboButtonPressed(SelectEnterEventArgs args)
     {
-        if (!isLocked) return;
+        if (!isLocked && !isResettable) return;
 
         if (buttonPresses >= maxButtonPresses)
         {
-            ResetLock();
+            ResetUserValues();
         }
 
-        for (int i = 0; i < comboButtons.Length; i++)
-        {
-            if (args.interactableObject.transform.name == comboButtons[i].transform.name)
-            {
-                inputValues += i.ToString();
-                userInputText.text = inputValues;
-            }
-            else
-            {
-                comboButtons[i].ResetColor();
-            }
-        }
+        string symbol = args.interactableObject.transform.GetComponent<SymbolButtonInteractable>().Symbol;
+        userInputText.text += symbol;
+        inputValues += symbol;
         buttonPresses++;
+
         if (buttonPresses == maxButtonPresses)
         {
             CheckCombo();
@@ -65,21 +62,54 @@ public class CombonationLock : MonoBehaviour
 
     private void CheckCombo()
     {
+        if (resetCombo)
+        {
+            resetCombo = false;
+            LockCombo();
+            return;
+        }
+        
         if (comboCode == inputValues)
         {
-            isLocked = false;
-            lockedPanel.color = unlockedColor;
-            lockedText.text = unlockedTextString;
+            UnlockCombo();
         }
     }
 
-    private void ResetLock()
+    private void UnlockCombo()
     {
-        inputValues = "";
-        userInputText.text = "";
+        isLocked = false;
+        lockedPanel.color = unlockedColor;
+        lockedText.text = unlockedTextString;
+        if (isResettable)
+        {
+            ResetCombo();
+        }
+    }
+
+    private void ResetCombo()
+    {
+        infoText.text = infoResetString;
+        ResetUserValues();
+        resetCombo = true;
+    }
+
+    private void LockCombo()
+    {
         isLocked = true;
+
+        comboCode = inputValues;
         lockedPanel.color = lockedColor;
         lockedText.text = lockedTextString;
+
+        infoText.text = infoStartString;
+
+        ResetUserValues();
+    }
+
+    private void ResetUserValues()
+    {
+        inputValues = "";
+        userInputText.text = inputValues;
         buttonPresses = 0;
     }
 }
