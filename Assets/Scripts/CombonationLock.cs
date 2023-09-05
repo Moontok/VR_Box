@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using TMPro;
@@ -18,14 +15,14 @@ public class CombonationLock : MonoBehaviour
     [SerializeField] private SymbolButtonInteractable[] comboButtons = null;
     [SerializeField] private string comboCode = "000";
     [SerializeField] private TMP_Text infoText = null;
-    [SerializeField] private string infoStartString = "Enter 3 Digit Code";
-    [SerializeField] private string infoResetString = "Enter 3 Digits to Reset";
+    [SerializeField] private const string START_STRING = "Enter 3 Digit Code";
+    [SerializeField] private const string RESET_STRING = "Enter 3 Digits to Reset";
     [SerializeField] private Image lockedPanel = null;
     [SerializeField] private Color unlockedColor = Color.green;
     [SerializeField] private Color lockedColor = Color.red;
     [SerializeField] private TMP_Text lockedText = null;
-    [SerializeField] private string lockedTextString = "Locked";
-    [SerializeField] private string unlockedTextString = "Unlocked";
+    [SerializeField] private const string LOCKED_STRING = "Locked";
+    [SerializeField] private const string UNLOCK_STRING = "Unlocked";
     [SerializeField] private bool isLocked = true;
     [SerializeField] private bool isResettable = true;
 
@@ -87,7 +84,7 @@ public class CombonationLock : MonoBehaviour
         OnUnlock();
 
         lockedPanel.color = unlockedColor;
-        lockedText.text = unlockedTextString;
+        lockedText.text = UNLOCK_STRING;
         if (isResettable)
         {
             ResetCombo();
@@ -96,7 +93,7 @@ public class CombonationLock : MonoBehaviour
 
     private void ResetCombo()
     {
-        infoText.text = infoResetString;
+        infoText.text = RESET_STRING;
         ResetUserValues();
         resetCombo = true;
     }
@@ -108,9 +105,9 @@ public class CombonationLock : MonoBehaviour
 
         comboCode = inputValues;
         lockedPanel.color = lockedColor;
-        lockedText.text = lockedTextString;
+        lockedText.text = LOCKED_STRING;
 
-        infoText.text = infoStartString;
+        infoText.text = START_STRING;
 
         ResetUserValues();
     }
