@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -12,7 +10,6 @@ public class SimpleUIControl : MonoBehaviour
     [SerializeField] private TMP_Text[] messageTexts = null;
     [SerializeField] private GameObject keyLight = null;
     [SerializeField] private MeshRenderer[] keyParts = null;
-    [SerializeField] private Material keyBaseMat = null;
     [SerializeField] private Material keyEmissionMat = null;
     [SerializeField] private GameObject particles = null;
 

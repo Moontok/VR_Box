@@ -15,7 +15,6 @@ public class DrawerInteractable : XRGrabInteractable
     [SerializeField] GameObject particles = null;
     [SerializeField] MeshRenderer[] keyParts = null;
     [SerializeField] Material keyBaseMat = null;
-    [SerializeField] Material keyEmissionMat = null;
 
     private Transform parentTransform = null;
     private bool isGrabbed = false;
