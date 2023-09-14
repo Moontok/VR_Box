@@ -49,7 +49,6 @@ public class DoorInteractable : SimpleHingeInteractable
         {
             isClosed = true;
             ReleaseHinge();
-            Debug.Log("Close");
         }
         else if (other == openCollider)
         {

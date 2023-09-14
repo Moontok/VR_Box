@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using Unity.Android.Gradle;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.Events;
 
 public class TheWall : MonoBehaviour
 {
-    [SerializeField] bool isDynamic = false;
-    [SerializeField] int explosionForce = 2000;
+    [SerializeField] int explosiveForce = 10000;
+    [SerializeField] RemoteExplosionDevice remoteExplosiveDevice = null;
 
     List<GameObject> wallBlocks = new List<GameObject>();
+    bool detonated = false;
 
     private void Awake()
     {
@@ -20,8 +21,6 @@ public class TheWall : MonoBehaviour
 
     public void DynamicWall(bool toggle)
     {
-        if (!isDynamic) return;
-
         foreach (GameObject block in wallBlocks)
         {
             Rigidbody rb = block.GetComponent<Rigidbody>();
@@ -31,11 +30,20 @@ public class TheWall : MonoBehaviour
 
     public void ExplodeWall()
     {
+        if (detonated) return;
+
+        detonated = true;
+
+        AudioSource audioSource = GetComponent<AudioSource>();
+        audioSource.Play();
+        
         foreach (GameObject block in wallBlocks)
         {
+            int force = Random.Range(explosiveForce / 2, explosiveForce);
+
             Rigidbody rb = block.GetComponent<Rigidbody>();
             rb.isKinematic = false;
-            rb.AddRelativeForce(Random.onUnitSphere * explosionForce);
+            rb.AddRelativeForce(Random.onUnitSphere * force);
         }
     }
 }
