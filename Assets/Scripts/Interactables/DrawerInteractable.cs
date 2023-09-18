@@ -15,6 +15,7 @@ public class DrawerInteractable : XRGrabInteractable
     [SerializeField] GameObject particles = null;
     [SerializeField] MeshRenderer[] keyParts = null;
     [SerializeField] Material keyBaseMat = null;
+    [SerializeField] AudioClip drawerMoveClip = null;
 
     private Transform parentTransform = null;
     private bool isGrabbed = false;
@@ -22,6 +23,8 @@ public class DrawerInteractable : XRGrabInteractable
 
     private const string DEFAULT_LAYER = "Default";
     private const string GRAB_LAYER = "Grab";
+
+    public AudioClip GetDrawerMoveClip => drawerMoveClip;
 
     void Start()
     {

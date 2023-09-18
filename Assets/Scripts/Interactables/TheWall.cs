@@ -5,11 +5,16 @@ using UnityEngine.Events;
 
 public class TheWall : MonoBehaviour
 {
+    public UnityEvent OnDestroy;
+
     [SerializeField] int explosiveForce = 10000;
     [SerializeField] RemoteExplosionDevice remoteExplosiveDevice = null;
+    [SerializeField] AudioClip destroyWallClip = null;
 
     List<GameObject> wallBlocks = new List<GameObject>();
     bool detonated = false;
+
+    public AudioClip GetDestroyClip => destroyWallClip;
 
     private void Awake()
     {
@@ -31,6 +36,8 @@ public class TheWall : MonoBehaviour
     public void ExplodeWall()
     {
         if (detonated) return;
+
+        OnDestroy?.Invoke();
 
         detonated = true;
 
