@@ -5,32 +5,23 @@ using System;
 
 public class SimpleUIControl : MonoBehaviour
 {
-    [SerializeField] private ButtonInteractable startButton = null;
-    [SerializeField] private string[] messages = null;
+    [SerializeField] private ProgressControl progressControl = null;
     [SerializeField] private TMP_Text[] messageTexts = null;
-    [SerializeField] private GameObject keyLight = null;
-    [SerializeField] private MeshRenderer[] keyParts = null;
-    [SerializeField] private Material keyEmissionMat = null;
-    [SerializeField] private GameObject particles = null;
 
-    private void Start()
+    private void OnEnable()
     {
-        if (startButton != null)
-        {
-            startButton.selectEntered.AddListener(StartButtonPressed);
-        }
+        progressControl.OnStartGame.AddListener(StartGame);
+        progressControl.OnChallengeComplete.AddListener(ChallengeComplete);
     }
 
-    private void StartButtonPressed(SelectEnterEventArgs args)
+    public void StartGame(string arg)
     {
-        SetText(messages[1]);
-        keyLight.SetActive(true);
-        foreach (MeshRenderer keyPart in keyParts)
-        {
-            keyPart.material = keyEmissionMat;
-        }
-        particles.SetActive(true);
+        SetText(arg);
+    }
 
+    public void ChallengeComplete(string arg)
+    {
+        SetText(arg);
     }
 
     public void SetText(string text)
@@ -40,5 +31,4 @@ public class SimpleUIControl : MonoBehaviour
             messageTexts[i].text = text;
         }
     }
-
 }

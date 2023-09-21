@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 public class DoorInteractable : SimpleHingeInteractable
 {
-    [SerializeField] CombonationLock comboLock = null;
+    [SerializeField] CombinationLock comboLock = null;
     [SerializeField] Vector3 rotationLimts = Vector3.zero;
     [SerializeField] Transform doorObject = null;
     [SerializeField] Collider closeCollider = null;

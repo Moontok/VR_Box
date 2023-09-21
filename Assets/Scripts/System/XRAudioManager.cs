@@ -4,6 +4,12 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class XRAudioManager : MonoBehaviour
 {
+    [Header("Progress Control")]
+    [SerializeField] ProgressControl progressControl = null;
+    [SerializeField] AudioSource progressSoundSource = null;
+    [SerializeField] AudioClip startGameClip = null;
+    [SerializeField] AudioClip challengeCompleteClip = null;
+
     [Header("Grab Interactables")]
     [SerializeField] XRGrabInteractable[] grabInteractables = null;
     [SerializeField] AudioSource grabSoundSource = null;
@@ -22,8 +28,17 @@ public class XRAudioManager : MonoBehaviour
     [SerializeField] TheWall wall = null;
     [SerializeField] AudioSource wallSource = null;
 
+    [Header("Music")]
+    [SerializeField] AudioSource musicSource = null;
+    [SerializeField] AudioClip musicClip = null;
+
+    private bool startAudio = false;
+
     private void OnEnable()
     {
+        progressControl?.OnStartGame.AddListener(StartGame);
+        progressControl?.OnChallengeComplete.AddListener(ChallengeComplete);
+
         foreach (var grabInteractable in grabInteractables)
         {
             grabInteractable.selectEntered.AddListener(OnGrab);
@@ -31,12 +46,40 @@ public class XRAudioManager : MonoBehaviour
             grabInteractable.activated.AddListener(OnActivate);
         }
         wall?.OnDestroy.AddListener(OnDestroyWall);
-        
+
     }
 
     private void OnDisable()
     {
         wall?.OnDestroy.RemoveListener(OnDestroyWall);
+        progressControl?.OnStartGame.RemoveListener(StartGame);
+        progressControl?.OnChallengeComplete.RemoveListener(ChallengeComplete);
+        foreach (var grabInteractable in grabInteractables)
+        {
+            grabInteractable.selectEntered.RemoveListener(OnGrab);
+            grabInteractable.selectExited.RemoveListener(OnRelease);
+            grabInteractable.activated.RemoveListener(OnActivate);
+        }
+    }
+
+    private void StartGame(string arg0)
+    {
+        if (!startAudio)
+        {
+            startAudio = true;
+            musicSource.clip = musicClip;
+            musicSource.Play();
+        }
+        else
+        {
+            progressSoundSource.PlayOneShot(startGameClip);
+
+        }
+    }
+
+    private void ChallengeComplete(string arg0)
+    {
+        progressSoundSource.PlayOneShot(challengeCompleteClip);
     }
 
     private void OnDestroyWall()

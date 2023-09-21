@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-public class CombonationLock : MonoBehaviour
+public class CombinationLock : MonoBehaviour
 {
     public UnityAction UnlockAction;
     private void OnUnlock() => UnlockAction?.Invoke();

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.Android.Gradle;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class TheWall : MonoBehaviour
 {
@@ -10,11 +11,13 @@ public class TheWall : MonoBehaviour
     [SerializeField] int explosiveForce = 10000;
     [SerializeField] RemoteExplosionDevice remoteExplosiveDevice = null;
     [SerializeField] AudioClip destroyWallClip = null;
+    [SerializeField] XRSocketInteractor wallSocket = null;
 
     List<GameObject> wallBlocks = new List<GameObject>();
     bool detonated = false;
 
     public AudioClip GetDestroyClip => destroyWallClip;
+    public XRSocketInteractor GetWallSocket => wallSocket;
 
     private void Awake()
     {
