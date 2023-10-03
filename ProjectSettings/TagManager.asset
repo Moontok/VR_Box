@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Key
   - Wand
+  - Wall Cube
   layers:
   - Default
   - TransparentFX

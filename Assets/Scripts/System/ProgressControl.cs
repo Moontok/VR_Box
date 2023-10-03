@@ -30,15 +30,23 @@ public class ProgressControl : MonoBehaviour
     [SerializeField] private TheWall wall = null;
     XRSocketInteractor wallSocket = null;
 
+    [Header("The Robot")]
+    [SerializeField] NavMeshRobot robot = null;
+
     [Header("Building")]
     [SerializeField] SimpleSliderControl buildingSlider = null;
 
     [Header("Challenge Settings")]
     [SerializeField] private string startMessage = null;
+    [SerializeField] private string endGameMessageString = null;
     [SerializeField] private string[] challengeMessages = null;
+    [SerializeField] private int wallCubesToDestroy = 10;
+    [SerializeField] private int challengeNumber = 0;
 
+    private int wallCubesDestroyed = 0;
     private bool startGame = false;
-    private int challengeNumber = 0;
+    private bool challengesComplete = false;
+    
 
     private void Start()
     {
@@ -48,6 +56,7 @@ public class ProgressControl : MonoBehaviour
         comboLock.UnlockAction += OnUnlockAction;
         SetWall();
         buildingSlider?.OnSliderActive.AddListener(BuildingSliderActive);
+        robot?.OnDestroyWallCube.AddListener(OnDestroyWallCube);
     }
 
     private void ChallengeComplete()
@@ -59,7 +68,7 @@ public class ProgressControl : MonoBehaviour
         }
         else if (challengeNumber >= challengeMessages.Length)
         {
-            OnChallengeComplete?.Invoke("You Win!");
+            OnChallengeComplete?.Invoke(endGameMessageString);
         }
     }
 
@@ -75,8 +84,71 @@ public class ProgressControl : MonoBehaviour
             keyPart.material = keyEmissionMat;
         }
         particles.SetActive(true);
-        OnStartGame?.Invoke(challengeMessages[challengeNumber]);
+        if (challengeNumber == 0)
+        {
+            OnStartGame?.Invoke(challengeMessages[challengeNumber]);
+        }
+    }
 
+    private void OnDrawerSocketed(SelectEnterEventArgs args)
+    {
+        if (challengeNumber == 0)
+        {
+            ChallengeComplete();
+        }
+    }
+
+    private void OnDrawerDetach()
+    {
+        if (challengeNumber == 1)
+        {
+            ChallengeComplete();
+        }
+    }
+
+    private void OnUnlockAction()
+    {
+        if (challengeNumber == 2)
+        {
+            ChallengeComplete();
+        }
+    }
+
+    private void OnWallSocketed(SelectEnterEventArgs arg0)
+    {
+        if (challengeNumber == 3)
+        {
+            ChallengeComplete();
+        }
+    }
+
+    private void OnWallDestroyed()
+    {
+        if (challengeNumber == 4)
+        {
+            ChallengeComplete();
+        }
+    }
+
+    private void BuildingSliderActive()
+    {
+        if (challengeNumber == 5)
+        {
+            ChallengeComplete();
+        }
+    }
+
+    private void OnDestroyWallCube()
+    {
+        wallCubesDestroyed++;
+        if (wallCubesDestroyed >= wallCubesToDestroy && !challengesComplete)
+        {
+            challengesComplete = true;
+            if (challengeNumber == 6)
+            {
+                ChallengeComplete();
+            }
+        }
     }
 
     private void SetDrawerInteractable()
@@ -86,40 +158,10 @@ public class ProgressControl : MonoBehaviour
         drawer.OnDrawerDetached.AddListener(OnDrawerDetach);
     }
 
-    private void OnDrawerDetach()
-    {
-        ChallengeComplete();
-    }
-
-    private void OnDrawerSocketed(SelectEnterEventArgs args)
-    {
-        ChallengeComplete();
-    }
-
-    private void OnUnlockAction()
-    {
-        ChallengeComplete();
-    }
-
     private void SetWall()
     {
         wall.OnDestroy.AddListener(OnWallDestroyed);
         wallSocket = wall.GetWallSocket;
         wallSocket?.selectEntered.AddListener(OnWallSocketed);
-    }
-
-    private void OnWallSocketed(SelectEnterEventArgs arg0)
-    {
-        ChallengeComplete();
-    }
-
-    private void OnWallDestroyed()
-    {
-        ChallengeComplete();
-    }
-
-    private void BuildingSliderActive()
-    {
-        ChallengeComplete();
     }
 }

@@ -1,18 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class NavMeshJoystick : MonoBehaviour
+public class NavMeshJoystick : SimpleHingeInteractable
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] NavMeshRobot robot = null;
+    [SerializeField] Transform rotationParentObject = null;
+    [SerializeField] Transform trackedObject = null;
+    [SerializeField] Transform trackingObject = null;
+
+    protected override void Update()
     {
-        
+        base.Update();
+        if (isSelected)
+        {
+            MoveRobot();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void MoveRobot()
     {
-        
+        trackingObject.position = new Vector3(trackedObject.position.x, trackingObject.position.y, trackedObject.position.z);
+        rotationParentObject.rotation = Quaternion.identity;
+
+        robot.MoveAgent(trackingObject.localPosition);
+    }
+
+    protected override void ResetHinge()
+    {
+        robot.StopAgent();
     }
 }
